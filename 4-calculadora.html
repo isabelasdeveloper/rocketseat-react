@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
+      rel="stylesheet"
+    />
+    <title>Calculadora em React</title>
+    <!-- TAILWIND -->
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+      @theme {
+        --text-primary: #ebebeb;
+        --text-secondary: #6b6b6b;
+        --color-primary: #2d2a37;
+        --color-secondary: #462878;
+        --gradient: 180deg, rgba(0, 0, 0, 0.05) 0%,
+          rgba(255, 255, 255, 0.05) 100%;
+        --gradient-secondary: 180deg, rgba(0, 0, 0, 0.1) 0%,
+          rgba(255, 255, 255, 0.1) 100%;
+        --gradient-tertiary: 180deg, #807ece 0%, #8e7ece 100%;
+        /* prettier-ignore */
+        --box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25), 
+        0 188px 52px 0 rgba(0, 0, 0, 0.01), 
+        0 120px 48px 0 rgba(0, 0, 0, 0.04), 
+        0 68px 41px 0 rgba(0, 0, 0, 0.15), 
+        0 30px 30px 0 rgba(0, 0, 0, 0.26), 
+        0 8px 17px 0 rgba(0, 0, 0, 0.29), 
+        0 6px 8px 0 rgba(255, 255, 255, 0.10) inset, 
+        0 -4px 5px 0 rgba(0, 0, 0, 0.22) inset;
+      }
+    </style>
+    <!-- REACT E BABEL -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+
+  <body
+    style="font-family: 'Rubik', sans-serif"
+    class="min-h-screen bg-[linear-gradient(var(--gradient-tertiary))]"
+  >
+    <div id="root"></div>
+    <script type="text/babel">
+      //Variáveis dos textos
+      const textVariants = {
+        default: 'text-xl text-[var(--text-primary)] text-[var(--font-sans)]',
+        previous:
+          'text-xl text-[var(--text-secondary)] text-[var(--font-sans)]',
+        heading: 'text-2xl text-[var(--text-primary)] text-[var(--font-sans)]',
+        history: 'text-xl text-[var(--text-primary)] text-[var(--font-sans)]',
+        result: 'text-3xl text-[var(--text-primary)] text-[var(--font-sans)]',
+      };
+
+      //Componente de texto da calculadora
+      function Text({
+        as = 'span',
+        variant = 'default',
+        className,
+        children,
+        ...props
+      }) {
+        return React.createElement(
+          as,
+          {
+            className: `${textVariants[variant]} ${className ? className : ''}`,
+            ...props,
+          },
+          children
+        );
+      }
+
+      //Variáveis dos botões
+      const buttonVariants = {
+        primary: 'bg-[var(--color-primary)]',
+        secondary: 'bg-[var(--color-secondary)]',
+      };
+
+      //Componente do botão da calculadora
+      function Button({ className, children, variant = 'primary', ...props }) {
+        return (
+          <Text
+            as="button"
+            variant="heading"
+            className={`
+             flex items-center justify-center
+             rounded-xl p-3 cursor-pointer
+             text-[var(--text-primary)]
+             bg-[linear-gradient(var(--gradient))]
+             hover:bg-[linear-gradient(var(--gradient-secondary))]
+             shadow-[var(--box-shadow)]
+             ${buttonVariants[variant]}
+             ${className ? className : ''}
+             `}
+            {...props}
+          >
+            {children}
+          </Text>
+        );
+      }
+
+      //Componente do Card da calculadora
+      function Card({ children, className, ...props }) {
+        return (
+          <div
+            className={`
+              bg-[var(--color-primary)]
+              shadow-[var(--box-shadow)]
+              rounded-2xl
+              ${className ? className : ''}`}
+          >
+            {children}
+          </div>
+        );
+      }
+
+      //prettier-ignore
+      const buttons = [ //Array com vários arrays dentro
+      [ // Array com vários objetos dentro
+        {input: "CE"},
+        {input: "C", className:"flex-1 h-16"},
+        {input: "/", variant: "secondary"}
+      ],
+      [
+        {input: "7"},
+        {input: "8"},
+        {input: "9"},
+        {input: "*", variant: "secondary"}
+      ],
+      [
+        {input: "4"},
+        {input: "5"},
+        {input: "6"},
+        {input: "-", variant: "secondary"}
+      ],
+      [
+        {input: "1"},
+        {input: "2"},
+        {input: "3"},
+        {input: "+", variant: "secondary"}
+      ],
+      [
+        {input: "0", className:"flex-1 h-16"},
+        {input: ","},
+        {input: "=", variant:"secondary", className:"w-16 h-16"}
+      ]
+      ]
+
+      //Componente do Display da calculadora
+      function CalculatorDisplay({ operation, result }) {
+        return (
+          <div
+            className={`flex
+              flex-col gap-2 px-[1.375rem]
+              cursor-default select-none`}
+          >
+            {/*Texto de operações da calculadora*/}
+            <Text
+              as="div"
+              className="flex items-center justify-end h-1"
+              variant="previous"
+            >
+              {result && operation}
+            </Text>
+            <div className={`flex items center justify-between h-9`}>
+              <Text variant="previous"> = </Text>
+              <Text variant="result"> {result || operation} </Text>
+            </div>
+          </div>
+        );
+      }
+
+      // Componente da Calculadora
+      function Calculator() {
+        const [operation, setOperation] = React.useState('');
+        const [result, setResult] = React.useState('');
+
+        function handleInputClick(input) {
+          if (input == 'C') {
+            setResult('');
+            setOperation('');
+            return;
+          }
+
+          if (result) {
+            setOperation(isNaN(input) ? `${result}${input}` : input);
+            setResult('');
+            return;
+          }
+
+          if (input == 'CE') {
+            setOperation(operation.trim().slice(0, -1));
+            setResult('');
+            return;
+          }
+
+          if (input == '=') {
+            const operationResult = eval(operation.replace(/,/g, '.'));
+            const parsedResult = operationResult
+              .toString()
+              ?.replace(/\./g, ',');
+            setResult(parsedResult);
+            return;
+          }
+
+          if (input === ',') {
+            if (!operation.endsWith(',')) {
+              setOperation(`${operation},`);
+              return;
+            }
+          }
+
+          setOperation(`${operation}${input}`);
+        }
+
+        return (
+          <Card
+            className={`flex flex-col gap-[1.625rem] w-[22.25rem] pt-14 px-8 pb-8`}
+          >
+            <CalculatorDisplay operation={operation} result={result} />
+
+            <div className="flex flex-col gap-3">
+              {buttons.map((row, index) => (
+                <div key={`row-${index}`} className="flex gap-3">
+                  {row.map((button) => (
+                    <Button
+                      key={button.input}
+                      className={button.className || 'h-16 w-16'} //Exibe a classe adicionada no objeto se houver, se não usa tailwind padrão
+                      variant={button.variant}
+                      onClick={() => handleInputClick(button.input)}
+                    >
+                      {button.input}
+                    </Button>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </Card>
+        );
+      }
+
+      // Histórico de operações da calculadora
+      function Operation() {
+        return (
+          <Card
+            className={`flex flex-col gap-[1.625rem] w-full sm:w-2/5 pt-14 px-8 pb-8`}
+          >
+            <div className={`flex flex-col gap-4`}>
+              <Text variant="heading">Histórico de Operações</Text>
+              <ul as="li" className="flex flex-col gap-3">
+                <Text variant="history">2 + 2 = 4</Text>
+                <Text variant="history">13 + 1 = 14</Text>
+                <Text variant="history">200 - 100 = 100</Text>
+              </ul>
+            </div>
+          </Card>
+        );
+      }
+
+      // Cria a aplicação
+      function App() {
+        return (
+          // prettier-ignore
+          <main className={`
+            py-28 px-4 sm:px-10
+            `}>
+
+            <div className={`
+              flex flex-col
+              sm:flex-row
+              gap-4 justify-center
+              items-center sm:items-stretch
+
+              `}>
+              <Calculator />
+              <Operation />
+            </div>
+
+          </main>
+        );
+      }
+
+      // Renderiza a aplicação
+      ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+  </body>
+</html>

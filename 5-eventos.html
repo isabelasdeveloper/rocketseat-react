@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rocketseat: React.js</title>
+  </head>
+
+  <body>
+    <div id="root">`</div>
+
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+      function Alert1() {
+        function handleAlertClick(event) {
+          console.log(event);
+          alert('Esse é um alerta!');
+        }
+        return (
+          <button
+            type="button"
+            onClick={handleAlertClick}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-300 cursor-pointer"
+          >
+            Botão 1
+          </button>
+        );
+      }
+
+      function Alert2() {
+        function handleAlertClick(msg) {
+          console.log(msg);
+          alert(msg);
+        }
+        return (
+          <button
+            type="button"
+            onClick={() => handleAlertClick('Uma mensagem de alerta')}
+            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-300 cursor-pointer"
+          >
+            Botão 2
+          </button>
+        );
+      }
+
+      function Alert3() {
+        function handleAlertClick(event) {
+          alert(event.target.previousSibling.value);
+        }
+        return (
+          <div>
+            <input type="text" id="name" placeholder="Digite seu nome" />
+            <button type="button" onClick={handleAlertClick}>
+              Nome
+            </button>
+          </div>
+        );
+      }
+
+      function App() {
+        return (
+          <main className="p-5 flex gap-5">
+            <Alert1 />
+            <Alert2 />
+            <Alert3 />
+          </main>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+  </body>
+</html>
